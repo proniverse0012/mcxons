@@ -1,21 +1,25 @@
 name: Trigger Cron Jobs
 on:
   schedule:
-    # Runs every 5 minutes (UTC time)
-    - cron: '*/5 * * * *'
-  workflow_dispatch:  # Optional: Manually trigger via GitHub UI
+    - cron: '*/5 * * * *'  # Every 5 minutes
+  workflow_dispatch:
 
 jobs:
   trigger-cron:
     runs-on: ubuntu-latest
     steps:
-      - name: Update CA Certificates (Optional)
-        run: sudo apt update && sudo apt install -y ca-certificates
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      - name: Trigger Cron Endpoints
-        run: |
-          # First URL
-          curl -k -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36" "https://priqra.qzz.io/cron?key=${{ secrets.CRON_KEY }}"
-          
-          # Second URL
-          curl -k -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36" "https://priqra.qzz.io/cron/broadcasts?key=${{ secrets.CRON_KEY }}"
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+
+      - name: Install dependencies
+        run: npm install puppeteer
+
+      - name: Run Puppeteer script
+        env:
+          CRON_KEY: ${{ secrets.CRON_KEY }}  # Pass the secret as an environment variable
+        run: node scripts/cron.js
