@@ -1,13 +1,16 @@
 name: Trigger Cron Jobs
 on:
   schedule:
-    - cron: '*/5 * * * *'  # Every 5 minutes (UTC time)
-  workflow_dispatch:        # Optional: Manually trigger via GitHub UI
+    - cron: '*/5 * * * *'
+  workflow_dispatch:
 
 jobs:
   trigger-cron:
     runs-on: ubuntu-latest
     steps:
+      - name: Update CA Certificates
+        run: sudo apt update && sudo apt install -y ca-certificates
+
       - name: Hit Cron Endpoints
         run: |
           curl -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36" "https://priqra.qzz.io/cron?key=${{ secrets.CRON_KEY }}"
