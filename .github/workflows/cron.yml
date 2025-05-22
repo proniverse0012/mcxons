@@ -1,0 +1,16 @@
+name: Trigger Cron Jobs
+on:
+  schedule:
+    # Runs every 5 minutes (GitHub uses UTC time)
+    - cron: '*/5 * * * *'
+  workflow_dispatch:  # Optional: Allows manual triggering
+
+jobs:
+  trigger-cron:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Hit Cron Endpoints
+        run: |
+          # Mimic a browser user-agent to bypass bot blocking
+          curl -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36" "https://priqra.qzz.io/cron?key=${{ secrets.CRON_KEY }}"
+          curl -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36" "https://priqra.qzz.io/cron/broadcasts?key=${{ secrets.CRON_KEY }}"
