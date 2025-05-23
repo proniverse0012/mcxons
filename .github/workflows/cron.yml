@@ -1,7 +1,9 @@
 name: Trigger Cron Jobs
 on:
-  schedule:
-    - cron: "*/5 * * * *"  # Every 5 minutes
+  # Trigger via cron-job.org
+  repository_dispatch:
+    types: [manual-trigger]  # Custom event name
+  # Optional: Keep existing schedule (if needed)
   workflow_dispatch:
 
 jobs:
